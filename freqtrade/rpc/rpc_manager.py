@@ -54,6 +54,13 @@ class RPCManager:
             apiserver.add_rpc_handler(self._rpc)
             self.registered_modules.append(apiserver)
 
+        # Enable Mixin Messenger
+        if config.get("mixin_messenger", {}).get("enabled", False):
+            logger.info("Enabling rpc.mixin_messenger ...")
+            from freqtrade.rpc.mixin_messenger import MixinMessenger
+
+            self.registered_modules.append(MixinMessenger(self._rpc, config))
+
     def cleanup(self) -> None:
         """Stops all enabled rpc modules"""
         logger.info("Cleaning up rpc modules ...")

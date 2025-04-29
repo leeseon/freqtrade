@@ -581,3 +581,18 @@ class DataProvider:
         if always_send or message not in self.__msg_cache:
             self._msg_queue.append(message)
         self.__msg_cache[message] = True
+
+    def bot_start(self, **kwargs) -> None:
+        """
+        在策略启动时调用
+        """
+        startup_msg = (
+            f"{self.mode_str} RSI扫描策略已启动\n"
+            f"时间周期: {self.timeframe} & {self.timeframe_4h}\n"
+            f"止损: {self.stoploss*100}%\n"
+            f"追踪止损: {'启用' if self.trailing_stop else '禁用'}"
+        )
+        self.__rpc.send_msg({
+            "type": RPCMessageType.STRATEGY_MSG,
+            "msg": startup_msg
+        })
